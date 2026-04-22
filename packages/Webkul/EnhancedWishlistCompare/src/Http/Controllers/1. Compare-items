@@ -1,3 +1,236 @@
+1. Compare-items
+api/compare-items .....Webkul\Shop\Http\Controllers\API\CompareController@store
+
+1.2 :
+store--
+public function store()
+    {
+        $this->validate(request(), [
+            'product_id' => 'required|integer|exists:products,id',
+        ]);
+
+        $compareProduct = $this->compareItemRepository->findOneByField([
+            'customer_id' => auth()->guard('customer')->user()->id,
+            'product_id' => request()->input('product_id'),
+        ]);
+
+        if ($compareProduct) {
+            return (new JsonResource([
+                'message' => trans('shop::app.compare.already-added'),
+            ]))->response()->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        Event::dispatch('customer.compare.create.before');
+
+        $compareProduct = $this->compareItemRepository->create([
+            'customer_id' => auth()->guard('customer')->user()->id,
+            'product_id' => request()->input('product_id'),
+        ]);
+
+        Event::dispatch('customer.compare.create.after', $compareProduct);
+
+        return new JsonResource([
+            'message' => trans('shop::app.compare.item-add-success'),
+        ]);
+    }
+
+
+
+  
+
+i have q question can i update count globally by these emitter otr we need to create another emitter
+3.3 and mapped tht listners
+<?php
+
+namespace Webkul\EnhancedWishlistCompare\Providers;
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+class EventServiceProvider extends ServiceProvider {
+    protected $listen = [
+        'customer.compare.create.after' => [
+            'Webkul\EnhancedWishlistCompare\Listeners\CompareEventListener@created',
+        ],
+
+        'customer.compare.delete.after' => [
+            'Webkul\EnhancedWishlistCompare\Listeners\CompareEventListener@deleted',
+        ],
+    ];
+}
+2.4. Register that listners:
+<?php
+namespace Webkul\EnhancedWishlistCompare\Providers;
+use Illuminate\Support\ServiceProvider;
+use Webkul\EnhancedWishlistCompare\Providers\EventServiceProvider;
+class EnhancedWishlistCompareServiceProvider extends ServiceProvider{
+    public function boot(){
+        $this->loadRoutesFrom(__DIR__ . '/../Routes/api.php');
+        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+
+        $this->publishes([
+            __DIR__ . '/../Resources/assets' => public_path('vendor/enhanced-wishlist'),
+        ], 'public');
+        
+    }
+    public function register(){
+      $this->app->register(EventServiceProvider::class);
+    }
+
+}
+3. I have cteatyed compareCount.vue
+<template>
+    <div class="compare-badge">
+        <span v-if="count > 0" class="count">{{ count }}</span>
+    </div>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            count: 0
+        }
+    },
+
+    mounted() {
+        console.log("✅ CompareCount mounted");
+
+        this.fetchCount();
+
+        this.$emitter.on('after-compare-update', () => {
+            console.log("🎯 EVENT RECEIVED");
+            this.fetchCount();
+        });
+    },
+
+    methods: {
+        async fetchCount() {
+            try {
+                const response = await axios.get('/enhanced/compare/count');
+                this.count = response.data.count;
+            } catch (error) {
+                console.error("Error fetching compare count", error);
+            }
+        }
+    }
+}
+</script>
+3.2 . wishlistCount.vue
+<template>
+    <div class="wishlist-badge">
+        <span v-if="count > 0" class="count">{{ count }}</span>
+    </div>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            count: 0
+        }
+    },
+    mounted() {
+        this.fetchCount();
+        
+        
+        if (window.emitter) {
+            window.emitter.on('after-wishlist-update', () => {
+                this.fetchCount();
+            });
+        }
+    },
+    methods: {
+        async fetchCount() {
+            try {
+                const response = await axios.get('/enhanced/wishlist/count');
+                this.count = response.data.count;
+            } catch (error) {
+                console.error("Error fetching wishlist count", error);
+            }
+        }
+    }
+}
+</script>
+
+4. js
+console.log('--- SUCCESS: Enhanced Wishlist Loaded ---');
+
+import CompareCount from './components/CompareCount.vue';
+
+
+// ✅ register into existing app
+if (window.app) {
+    window.app.component('compare-count', CompareCount);
+}
+5. created api.php routes
+<?php
+
+use Illuminate\Support\Facades\Route;
+use Webkul\EnhancedWishlistCompare\Http\Controllers\EnhancedController;
+
+Route::group(['prefix' => 'api/enhanced', 'middleware' => ['web', 'customer']], function () {
+    Route::get('/compare/count', [EnhancedController::class, 'compareCount']);
+});
+6. composer.jon
+{
+    "name": "webkul/enhanced-wishlist-compare",
+    "description": "Enhanced Wishlist & Compare Package",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Webkul\\EnhancedWishlistCompare\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webkul\\EnhancedWishlistCompare\\Providers\\EnhancedWishlistCompareServiceProvider"
+            ]
+        }
+    }
+}
+
+7. vite.config.js
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import vue from '@vitejs/plugin-vue';
+import path from 'path';
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: [
+                'resources/css/app.css',
+                'resources/js/app.js',
+                'packages/Webkul/EnhancedWishlistCompare/src/Resources/assets/js/app.js',
+            ],
+            refresh: true,
+        }),
+
+        vue({
+            include: [
+                /\.vue$/,
+                /packages\/Webkul\/EnhancedWishlistCompare\/.*\.vue$/,
+            ],
+        }),
+    ],
+
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, 'resources/js'),
+        },
+    },
+
+    server: {
+        fs: {
+            allow: [
+                path.resolve(__dirname, 'packages'),
+            ],
+        },
+    },
+});
+
+Answer:
+
+1. Add to card triggered on store method
 <v-product-card
     {{ $attributes }}
     :product="product"
@@ -380,7 +613,6 @@
                             })
                             .then(response => {
                                 this.$emitter.emit('add-flash', { type: 'success', message: response.data.data.message });
-                                this.$emitter.emit('after-compare-update');
                             })
                             .catch(error => {
                                 if ([400, 422].includes(error.response.status)) {
@@ -407,7 +639,6 @@
                             localStorage.setItem('compare_items', JSON.stringify(items));
 
                             this.$emitter.emit('add-flash', { type: 'success', message: "@lang('shop::app.components.products.card.add-to-compare-success')" });
-                            this.$emitter.emit('after-compare-update');
                         } else {
                             this.$emitter.emit('add-flash', { type: 'warning', message: "@lang('shop::app.components.products.card.already-in-compare')" });
                         }
@@ -415,7 +646,6 @@
                         localStorage.setItem('compare_items', JSON.stringify([productId]));
 
                         this.$emitter.emit('add-flash', { type: 'success', message: "@lang('shop::app.components.products.card.add-to-compare-success')" });
-                        this.$emitter.emit('after-compare-update');
 
                     }
                 },

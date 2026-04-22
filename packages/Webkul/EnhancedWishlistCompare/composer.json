@@ -1,0 +1,17 @@
+{
+    "name": "webkul/enhanced-wishlist-compare",
+    "description": "Enhanced Wishlist & Compare Package",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Webkul\\EnhancedWishlistCompare\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webkul\\EnhancedWishlistCompare\\Providers\\EnhancedWishlistCompareServiceProvider"
+            ]
+        }
+    }
+}

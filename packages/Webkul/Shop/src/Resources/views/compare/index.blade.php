@@ -33,6 +33,7 @@
     </div>
 
     @pushOnce('scripts')
+         @vite(['src/Resources/assets/js/app.js'])
         <script
             type="text/x-template"
             id="v-compare-template"
@@ -230,6 +231,7 @@
                                         this.items = response.data.data;
 
                                         this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
+                                        this.$emitter.emit('compare-updated');
 
                                     })
                                     .catch(error => {
@@ -259,6 +261,7 @@
                                         this.items = [];
 
                                         this.$emitter.emit('add-flash', { type: 'success', message: response.data.data.message });
+                                        this.$emitter.emit('compare-updated');
                                     })
                                     .catch(error => {});
                             }

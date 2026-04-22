@@ -29,6 +29,7 @@ use Webkul\Rule\Providers\RuleServiceProvider;
 use Webkul\Sales\Providers\SalesServiceProvider;
 use Webkul\Shipping\Providers\ShippingServiceProvider;
 use Webkul\Shop\Providers\ShopServiceProvider;
+use Webkul\EnhancedWishlistCompare\Providers\EnhancedWishlistCompareServiceProvider;;
 use Webkul\Sitemap\Providers\SitemapServiceProvider;
 use Webkul\SocialLogin\Providers\SocialLoginServiceProvider;
 use Webkul\SocialShare\Providers\SocialShareServiceProvider;
@@ -79,4 +80,5 @@ return [
     TaxServiceProvider::class,
     ThemeServiceProvider::class,
     UserServiceProvider::class,
+    EnhancedWishlistCompareServiceProvider::class,
 ];
