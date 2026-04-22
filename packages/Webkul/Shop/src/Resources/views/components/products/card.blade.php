@@ -363,6 +363,7 @@
                                 this.product.is_wishlist = ! this.product.is_wishlist;
 
                                 this.$emitter.emit('add-flash', { type: 'success', message: response.data.data.message });
+                                this.$emitter.emit('after-wishlist-update');
                             })
                             .catch(error => {});
                         } else {

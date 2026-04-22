@@ -8,19 +8,27 @@
 export default {
     data() {
         return {
-            count: 0
-        }
+            count: 0,
+            onCompareUpdated: null,
+        };
     },
 
     mounted() {
-        console.log("✅ CompareCount mounted");
-
         this.fetchCount();
 
-        this.$emitter.on('after-compare-update', () => {
-            console.log("🎯 EVENT RECEIVED");
-            this.fetchCount();
-        });
+        this.onCompareUpdated = () => this.fetchCount();
+
+        if (this.$emitter) {
+            this.$emitter.on('after-compare-update', this.onCompareUpdated);
+            this.$emitter.on('compare-updated', this.onCompareUpdated);
+        }
+    },
+
+    beforeUnmount() {
+        if (this.$emitter && this.onCompareUpdated) {
+            this.$emitter.off('after-compare-update', this.onCompareUpdated);
+            this.$emitter.off('compare-updated', this.onCompareUpdated);
+        }
     },
 
     methods: {
@@ -33,5 +41,22 @@ export default {
             }
         }
     }
-}
+};
 </script>
+
+<style scoped>
+.count {
+    display: inline-flex;
+    min-width: 18px;
+    height: 18px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background: #111827;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    padding: 0 5px;
+}
+</style>

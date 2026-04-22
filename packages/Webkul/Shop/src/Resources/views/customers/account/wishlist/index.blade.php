@@ -51,6 +51,8 @@
                             <h2 class="text-2xl font-medium max-md:text-xl max-sm:text-base ltr:ml-2.5 md:ltr:ml-0 rtl:mr-2.5 md:rtl:mr-0">
                                 @lang('shop::app.customers.account.wishlist.page-title')
                             </h2>
+
+                            <span class="enhanced-wishlist-app ltr:ml-2 rtl:mr-2"></span>
                         </div>
 
                         {!! view_render_event('bagisto.shop.customers.account.wishlist.delete_all.before') !!}
@@ -293,6 +295,7 @@
                                         this.wishlistItems = [];
 
                                         this.$emitter.emit('add-flash', { type: 'success', message: response.data.data.message });
+                                        this.$emitter.emit('after-wishlist-update');
                                     })
                                     .catch(error => {});
                             },
@@ -324,6 +327,7 @@
                                         this.$emit('wishlist-items', response.data.data);
 
                                         this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
+                                        this.$emitter.emit('after-wishlist-update');
                                     })
                                     .catch(error => {});
                             },
@@ -353,6 +357,7 @@
                                 this.$emitter.emit('update-mini-cart', response.data.data.cart);
 
                                 this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
+                                this.$emitter.emit('after-wishlist-update');
 
                                 this.movingToCart = false;
                             })

@@ -24,31 +24,47 @@ class EnhancedController
             return response()->json(['count' => 0]);
         }
 
-        // Using the repository pattern:
         $count = $this->wishlistRepository->count([
             'customer_id' => $customer->id,
         ]);
 
+        DB::table('enhanced_wishlist_compare_counts')->updateOrInsert(
+            ['customer_id' => $customer->id],
+            [
+                'wishlist_count' => $count,
+                'updated_at'     => now(),
+                'created_at'     => now(),
+            ]
+        );
 
         return response()->json([
             'count' => $count
         ]);
     }
 
-    public function compareCount(){
+    public function compareCount()
+    {
         $customer = auth()->guard('customer')->user();
+
         if (! $customer) {
             return response()->json(['count' => 0]);
         }
 
-        // Using the repository pattern:
         $count = $this->compareItemRepository->count([
             'customer_id' => $customer->id,
         ]);
 
+        DB::table('enhanced_wishlist_compare_counts')->updateOrInsert(
+            ['customer_id' => $customer->id],
+            [
+                'compare_count' => $count,
+                'updated_at'    => now(),
+                'created_at'    => now(),
+            ]
+        );
+
         return response()->json([
             'count' => $count
         ]);
-
     }
 }

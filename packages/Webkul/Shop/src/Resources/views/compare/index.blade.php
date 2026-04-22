@@ -33,7 +33,6 @@
     </div>
 
     @pushOnce('scripts')
-         @vite(['src/Resources/assets/js/app.js'])
         <script
             type="text/x-template"
             id="v-compare-template"
@@ -49,6 +48,8 @@
                         <h1 class="text-2xl font-medium max-sm:text-base">
                             @lang('shop::app.compare.title')
                         </h1>
+
+                        <span class="enhanced-compare-app"></span>
 
                         {!! view_render_event('bagisto.shop.customers.account.compare.title.after') !!}
 

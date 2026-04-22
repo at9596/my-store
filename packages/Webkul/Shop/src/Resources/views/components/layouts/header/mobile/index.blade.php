@@ -42,12 +42,25 @@
             <div class="flex items-center gap-x-5 max-md:gap-x-4">
                 {!! view_render_event('bagisto.shop.components.layouts.header.mobile.compare.before') !!}
 
+                @if($showWishlist)
+                    <a
+                        href="{{ route('shop.customers.account.wishlist.index') }}"
+                        aria-label="@lang('shop::app.components.layouts.header.mobile.wishlist')"
+                        class="relative inline-flex"
+                    >
+                        <span class="text-2xl cursor-pointer icon-heart"></span>
+                        <span class="enhanced-wishlist-app absolute -right-2 -top-2"></span>
+                    </a>
+                @endif
+
                 @if($showCompare)
                     <a
                         href="{{ route('shop.compare.index') }}"
                         aria-label="@lang('shop::app.components.layouts.header.mobile.compare')"
+                        class="relative inline-flex"
                     >
                         <span class="text-2xl cursor-pointer icon-compare"></span>
+                        <span class="enhanced-compare-app absolute -right-2 -top-2"></span>
                     </a>
                 @endif
 
