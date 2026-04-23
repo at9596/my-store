@@ -68,10 +68,18 @@ class WishlistController extends APIController
             Event::dispatch('customer.wishlist.create.before', $productId);
 
             $wishlist = $this->wishlistRepository->create($data);
+            
 
             Event::dispatch('customer.wishlist.create.after', $wishlist);
-
+             // dd('after event');
+             // dd(trans('shop::app.customers.account.wishlist.success'));
             return new JsonResource([
+                'data' => [
+                    'wishlist_count' => $this->wishlistRepository->count([
+                        'channel_id'  => core()->getCurrentChannel()->id,
+                        'customer_id' => auth()->guard()->user()->id,
+                    ]),
+                ],
                 'message' => trans('shop::app.customers.account.wishlist.success'),
             ]);
         }
@@ -82,6 +90,12 @@ class WishlistController extends APIController
         ]);
 
         return new JsonResource([
+            'data' => [
+                'wishlist_count' => $this->wishlistRepository->count([
+                    'channel_id'  => core()->getCurrentChannel()->id,
+                    'customer_id' => auth()->guard()->user()->id,
+                ]),
+            ],
             'message' => trans('shop::app.customers.account.wishlist.removed'),
         ]);
     }
@@ -171,7 +185,10 @@ class WishlistController extends APIController
             ->get();
 
         return new JsonResource([
-            'data' => WishlistResource::collection($wishlistItems),
+            'data' => [
+                'wishlist'       => WishlistResource::collection($wishlistItems),
+                'wishlist_count' => $wishlistItems->count(),
+            ],
             'message' => trans('shop::app.customers.account.wishlist.removed'),
         ]);
     }
@@ -196,6 +213,9 @@ class WishlistController extends APIController
         }
 
         return new JsonResource([
+            'data' => [
+                'wishlist_count' => 0,
+            ],
             'message' => trans('shop::app.customers.account.wishlist.removed'),
         ]);
     }

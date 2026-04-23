@@ -28,5 +28,11 @@ return [
             'build_directory' => 'themes/installer/default/build',
             'package_assets_directory' => 'src/Resources/assets',
         ],
+
+        'vendor/enhanced-wishlist/build' => [
+            'hot_file'                 => 'vendor/enhanced-wishlist/build/hot',
+            'build_directory'          => 'vendor/enhanced-wishlist/build',
+            'package_assets_directory' => 'src/Resources/assets',
+        ],
     ],
 ];

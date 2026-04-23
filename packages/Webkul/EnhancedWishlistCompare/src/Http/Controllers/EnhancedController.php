@@ -2,20 +2,34 @@
 
 namespace Webkul\EnhancedWishlistCompare\Http\Controllers;
 
+use Illuminate\Support\Facades\Event;
+use Webkul\Shop\Http\Controllers\Controller;
 use Webkul\Customer\Repositories\WishlistRepository;
 use Webkul\Customer\Repositories\CompareItemRepository;
-use Illuminate\Support\Facades\DB;
+use Webkul\EnhancedWishlistCompare\Repositories\EnhancedWishlistCompareCountRepository;
 
-class EnhancedController
+class EnhancedController extends Controller
 {
-    protected $wishlistRepository;
-    protected $compareItemRepository;
-
-    public function __construct(WishlistRepository $wishlistRepository,CompareItemRepository $compareItemRepository ) 
-    {
-        $this->wishlistRepository = $wishlistRepository;
-        $this->compareItemRepository = $compareItemRepository;
+    /**
+     * Create a new controller instance.
+     *
+     * @param  \Webkul\Customer\Repositories\WishlistRepository  $wishlistRepository
+     * @param  \Webkul\Customer\Repositories\CompareItemRepository  $compareItemRepository
+     * @param  \Webkul\EnhancedWishlistCompare\Repositories\EnhancedWishlistCompareCountRepository  $enhancedWishlistCompareCountRepository
+     * @return void
+     */
+    public function __construct(
+        protected WishlistRepository $wishlistRepository,
+        protected CompareItemRepository $compareItemRepository,
+        protected EnhancedWishlistCompareCountRepository $enhancedWishlistCompareCountRepository
+    ) {
     }
+
+    /**
+     * Get wishlist count.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function wishlistCount()
     {
         $customer = auth()->guard('customer')->user();
@@ -28,13 +42,9 @@ class EnhancedController
             'customer_id' => $customer->id,
         ]);
 
-        DB::table('enhanced_wishlist_compare_counts')->updateOrInsert(
+        $this->enhancedWishlistCompareCountRepository->updateOrCreate(
             ['customer_id' => $customer->id],
-            [
-                'wishlist_count' => $count,
-                'updated_at'     => now(),
-                'created_at'     => now(),
-            ]
+            ['wishlist_count' => $count]
         );
 
         return response()->json([
@@ -42,6 +52,11 @@ class EnhancedController
         ]);
     }
 
+    /**
+     * Get compare count.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function compareCount()
     {
         $customer = auth()->guard('customer')->user();
@@ -54,13 +69,9 @@ class EnhancedController
             'customer_id' => $customer->id,
         ]);
 
-        DB::table('enhanced_wishlist_compare_counts')->updateOrInsert(
+        $this->enhancedWishlistCompareCountRepository->updateOrCreate(
             ['customer_id' => $customer->id],
-            [
-                'compare_count' => $count,
-                'updated_at'    => now(),
-                'created_at'    => now(),
-            ]
+            ['compare_count' => $count]
         );
 
         return response()->json([

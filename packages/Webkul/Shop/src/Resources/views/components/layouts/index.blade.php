@@ -53,7 +53,6 @@
         />
 
         @bagistoVite(['src/Resources/assets/css/app.css', 'src/Resources/assets/js/app.js'])
-        @vite(['src/Resources/assets/js/app.js'], 'vendor/enhanced-wishlist/build')
 
         <link
             rel="preconnect"

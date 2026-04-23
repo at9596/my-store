@@ -19,6 +19,9 @@ class EventServiceProvider extends ServiceProvider
             'Webkul\EnhancedWishlistCompare\Listeners\CompareEventListener@sync',
         ],
 
+        'customer.wishlist.create.before' => [
+            'Webkul\EnhancedWishlistCompare\Listeners\CompareEventListener@sync',
+        ],
         'customer.wishlist.create.after' => [
             'Webkul\EnhancedWishlistCompare\Listeners\CompareEventListener@sync',
         ],

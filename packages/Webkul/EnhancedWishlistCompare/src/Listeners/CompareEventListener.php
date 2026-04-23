@@ -4,9 +4,18 @@ namespace Webkul\EnhancedWishlistCompare\Listeners;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Webkul\Customer\Repositories\WishlistRepository;
+use Webkul\Customer\Repositories\CompareItemRepository;
+use Webkul\EnhancedWishlistCompare\Repositories\EnhancedWishlistCompareCountRepository;
 
 class CompareEventListener
 {
+    public function __construct(
+        protected WishlistRepository $wishlistRepository,
+        protected CompareItemRepository $compareItemRepository,
+        protected EnhancedWishlistCompareCountRepository $enhancedWishlistCompareCountRepository
+    ){}
+
     public function sync($eventPayload = null): void
     {
         $customerId = $this->resolveCustomerId($eventPayload);
@@ -15,21 +24,19 @@ class CompareEventListener
             return;
         }
 
-        $wishlistCount = DB::table('wishlists')
-            ->where('customer_id', $customerId)
-            ->count();
+        $wishlistCount = $this->wishlistRepository->where([
+            'customer_id' => $customerId,
+        ])->count();
 
-        $compareCount = DB::table('compare_items')
-            ->where('customer_id', $customerId)
-            ->count();
+        $compareCount = $this->compareItemRepository->where([
+            'customer_id' => $customerId,
+        ])->count();
 
-        DB::table('enhanced_wishlist_compare_counts')->updateOrInsert(
+        $this->enhancedWishlistCompareCountRepository->updateOrCreate(
             ['customer_id' => $customerId],
             [
                 'wishlist_count' => $wishlistCount,
                 'compare_count'  => $compareCount,
-                'updated_at'     => now(),
-                'created_at'     => now(),
             ]
         );
     }
@@ -41,9 +48,8 @@ class CompareEventListener
         }
 
         if (is_numeric($eventPayload)) {
-            $wishlistCustomerId = DB::table('wishlists')
-                ->where('id', (int) $eventPayload)
-                ->value('customer_id');
+            $wishlistItem = $this->wishlistRepository->find((int) $eventPayload);
+            $wishlistCustomerId = $wishlistItem ? $wishlistItem->customer_id : null;
 
             if ($wishlistCustomerId) {
                 return (int) $wishlistCustomerId;

@@ -45,11 +45,13 @@
 
                         {!! view_render_event('bagisto.shop.customers.account.compare.title.before') !!}
 
-                        <h1 class="text-2xl font-medium max-sm:text-base">
-                            @lang('shop::app.compare.title')
-                        </h1>
+                        <div class="flex items-center">
+                            <h1 class="text-2xl font-medium max-sm:text-base">
+                                @lang('shop::app.compare.title')
+                            </h1>
 
-                        <span class="enhanced-compare-app"></span>
+                            <compare-count :show-text="true" :is-pill="true" class="ltr:ml-2 rtl:mr-2"></compare-count>
+                        </div>
 
                         {!! view_render_event('bagisto.shop.customers.account.compare.title.after') !!}
 
@@ -221,6 +223,8 @@
 
                                     localStorage.setItem('compare_items', JSON.stringify(items));
 
+                                    this.$emitter.emit('after-compare-update', { count: items.length });
+
                                     return;
                                 }
 
@@ -232,11 +236,11 @@
                                         this.items = response.data.data;
 
                                         this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
-                                        this.$emitter.emit('compare-updated');
+                                        this.$emitter.emit('compare-updated', { count: this.items.length });
 
                                     })
                                     .catch(error => {
-                                        this.$emitter.emit('add-flash', { type: 'error', message: response.data.message });
+                                        this.$emitter.emit('add-flash', { type: 'error', message: error.response.data.message });
                                     });
                             }
                         });
@@ -252,6 +256,8 @@
 
                                     this.$emitter.emit('add-flash', { type: 'success', message:  "@lang('shop::app.compare.remove-all-success')" });
 
+                                    this.$emitter.emit('after-compare-update', { count: 0 });
+
                                     return;
                                 }
 
@@ -260,9 +266,8 @@
                                     })
                                     .then(response => {
                                         this.items = [];
-
-                                        this.$emitter.emit('add-flash', { type: 'success', message: response.data.data.message });
-                                        this.$emitter.emit('compare-updated');
+                                        this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
+                                        this.$emitter.emit('compare-updated', { count: 0 });
                                     })
                                     .catch(error => {});
                             }

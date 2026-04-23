@@ -562,7 +562,9 @@
                                 .then(response => {
                                     this.isWishlist = ! this.isWishlist;
 
-                                    this.$emitter.emit('add-flash', { type: 'success', message: response.data.data.message });
+                                    this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
+
+                                    this.$emitter.emit('after-wishlist-update', { count: response.data.data.wishlist_count });
                                 })
                                 .catch(error => {});
                         } else {
@@ -580,6 +582,9 @@
                                 })
                                 .then(response => {
                                     this.$emitter.emit('add-flash', { type: 'success', message: response.data.data.message });
+                                    this.$emitter.emit('after-compare-update', {
+                                        count: response.data.data.compare_count,
+                                    });
                                 })
                                 .catch(error => {
                                     if ([400, 422].includes(error.response.status)) {
@@ -606,6 +611,7 @@
                                 this.setStorageValue(this.getCompareItemsStorageKey(), existingItems);
 
                                 this.$emitter.emit('add-flash', { type: 'success', message: "@lang('shop::app.products.view.add-to-compare')" });
+                                this.$emitter.emit('after-compare-update', { count: existingItems.length });
                             } else {
                                 this.$emitter.emit('add-flash', { type: 'warning', message: "@lang('shop::app.products.view.already-in-compare')" });
                             }
@@ -613,6 +619,7 @@
                             this.setStorageValue(this.getCompareItemsStorageKey(), [productId]);
 
                             this.$emitter.emit('add-flash', { type: 'success', message: "@lang('shop::app.products.view.add-to-compare')" });
+                            this.$emitter.emit('after-compare-update', { count: 1 });
                         }
                     },
 

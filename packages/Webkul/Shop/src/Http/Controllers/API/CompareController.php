@@ -77,6 +77,11 @@ class CompareController extends APIController
         Event::dispatch('customer.compare.create.after', $compareProduct);
 
         return new JsonResource([
+            'data' => [
+                'compare_count' => $this->compareItemRepository->count([
+                    'customer_id' => auth()->guard('customer')->user()->id,
+                ]),
+            ],
             'message' => trans('shop::app.compare.item-add-success'),
         ]);
     }

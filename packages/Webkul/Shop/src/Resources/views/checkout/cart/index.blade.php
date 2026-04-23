@@ -600,6 +600,7 @@
 
                                         this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
 
+                                        this.$emitter.emit('after-wishlist-update', { count: response.data.data.wishlist_count });
                                     })
                                     .catch(error => {});
                             }

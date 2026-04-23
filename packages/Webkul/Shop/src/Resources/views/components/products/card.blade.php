@@ -362,8 +362,8 @@
                             .then(response => {
                                 this.product.is_wishlist = ! this.product.is_wishlist;
 
-                                this.$emitter.emit('add-flash', { type: 'success', message: response.data.data.message });
-                                this.$emitter.emit('after-wishlist-update');
+                                this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
+                                this.$emitter.emit('after-wishlist-update', { count: response.data.data.wishlist_count });
                             })
                             .catch(error => {});
                         } else {
@@ -380,12 +380,14 @@
                                 'product_id': productId
                             })
                             .then(response => {
-                                this.$emitter.emit('add-flash', { type: 'success', message: response.data.data.message });
-                                this.$emitter.emit('after-compare-update');
+                                this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
+                                this.$emitter.emit('after-compare-update', {
+                                    count: response.data.data.compare_count,
+                                });
                             })
                             .catch(error => {
                                 if ([400, 422].includes(error.response.status)) {
-                                    this.$emitter.emit('add-flash', { type: 'warning', message: error.response.data.data.message });
+                                    this.$emitter.emit('add-flash', { type: 'warning', message: error.response.data.message });
 
                                     return;
                                 }
@@ -408,7 +410,7 @@
                             localStorage.setItem('compare_items', JSON.stringify(items));
 
                             this.$emitter.emit('add-flash', { type: 'success', message: "@lang('shop::app.components.products.card.add-to-compare-success')" });
-                            this.$emitter.emit('after-compare-update');
+                            this.$emitter.emit('after-compare-update', { count: items.length });
                         } else {
                             this.$emitter.emit('add-flash', { type: 'warning', message: "@lang('shop::app.components.products.card.already-in-compare')" });
                         }
@@ -416,7 +418,7 @@
                         localStorage.setItem('compare_items', JSON.stringify([productId]));
 
                         this.$emitter.emit('add-flash', { type: 'success', message: "@lang('shop::app.components.products.card.add-to-compare-success')" });
-                        this.$emitter.emit('after-compare-update');
+                        this.$emitter.emit('after-compare-update', { count: 1 });
 
                     }
                 },

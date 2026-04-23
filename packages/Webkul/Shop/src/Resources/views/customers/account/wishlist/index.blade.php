@@ -52,7 +52,7 @@
                                 @lang('shop::app.customers.account.wishlist.page-title')
                             </h2>
 
-                            <span class="enhanced-wishlist-app ltr:ml-2 rtl:mr-2"></span>
+                            <wishlist-count :show-text="true" :is-pill="true" class="ltr:ml-2 rtl:mr-2"></wishlist-count>
                         </div>
 
                         {!! view_render_event('bagisto.shop.customers.account.wishlist.delete_all.before') !!}
@@ -294,7 +294,7 @@
                                     .then(response => {
                                         this.wishlistItems = [];
 
-                                        this.$emitter.emit('add-flash', { type: 'success', message: response.data.data.message });
+                                        this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
                                         this.$emitter.emit('after-wishlist-update');
                                     })
                                     .catch(error => {});
@@ -324,7 +324,7 @@
                                 this.$axios
                                     .delete(`{{ route('shop.api.customers.account.wishlist.destroy', '') }}/${this.wishlist.id}`)
                                     .then(response => {
-                                        this.$emit('wishlist-items', response.data.data);
+                                        this.$emit('wishlist-items', response.data.data.wishlist);
 
                                         this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
                                         this.$emitter.emit('after-wishlist-update');
