@@ -1,4 +1,5 @@
 @pushOnce('scripts')
+    @if (config('enhanced_wishlist.wishlist.enabled'))
     <!-- Wishlist Badge Template -->
     <script type="text/x-template" id="v-wishlist-badge-template">
         <div 
@@ -13,7 +14,9 @@
             </span>
         </div>
     </script>
+    @endif
 
+    @if (config('enhanced_wishlist.compare.enabled'))
     <!-- Compare Badge Template -->
     <script type="text/x-template" id="v-compare-badge-template">
         <div 
@@ -28,8 +31,10 @@
             </span>
         </div>
     </script>
+    @endif
 
     <script type="module">
+        @if (config('enhanced_wishlist.wishlist.enabled'))
         /**
          * Wishlist Badge Component
          */
@@ -96,7 +101,9 @@
                 }
             }
         });
+        @endif
 
+        @if (config('enhanced_wishlist.compare.enabled'))
         /**
          * Compare Badge Component
          */
@@ -163,6 +170,7 @@
                 }
             }
         });
+        @endif
     </script>
 
     <style>

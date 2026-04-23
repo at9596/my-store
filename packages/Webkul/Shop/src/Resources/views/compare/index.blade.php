@@ -266,7 +266,7 @@
                                     })
                                     .then(response => {
                                         this.items = [];
-                                        this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
+                                        this.$emitter.emit('add-flash', { type: 'success', message: response.data.data.message });
                                         this.$emitter.emit('compare-updated', { count: 0 });
                                     })
                                     .catch(error => {});

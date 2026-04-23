@@ -16,7 +16,12 @@ class EnhancedWishlistCompareServiceProvider extends ServiceProvider{
 
         // Inject scripts into the footer/scripts stack
         $this->app->make('view')->composer('shop::components.layouts.index', function ($view) {
-            $view->getFactory()->startPush('scripts', view('enhanced::scripts')->render());
+            if (
+                config('enhanced_wishlist.wishlist.enabled') 
+                || config('enhanced_wishlist.compare.enabled')
+            ) {
+                $view->getFactory()->startPush('scripts', view('enhanced::scripts')->render());
+            }
         });
     }
 

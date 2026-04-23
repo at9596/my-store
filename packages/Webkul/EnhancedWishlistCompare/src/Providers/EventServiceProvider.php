@@ -11,6 +11,10 @@ class EventServiceProvider extends ServiceProvider
             'Webkul\EnhancedWishlistCompare\Listeners\CompareEventListener@sync',
         ],
 
+        'customer.compare.create.before' => [
+            'Webkul\EnhancedWishlistCompare\Listeners\CompareEventListener@sync',
+        ],
+
         'customer.compare.delete.after' => [
             'Webkul\EnhancedWishlistCompare\Listeners\CompareEventListener@sync',
         ],

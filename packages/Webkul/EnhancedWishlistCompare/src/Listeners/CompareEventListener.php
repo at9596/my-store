@@ -3,7 +3,6 @@
 namespace Webkul\EnhancedWishlistCompare\Listeners;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Webkul\Customer\Repositories\WishlistRepository;
 use Webkul\Customer\Repositories\CompareItemRepository;
 use Webkul\EnhancedWishlistCompare\Repositories\EnhancedWishlistCompareCountRepository;
