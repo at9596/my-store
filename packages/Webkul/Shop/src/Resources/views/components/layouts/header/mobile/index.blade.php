@@ -49,7 +49,10 @@
                         class="relative inline-flex"
                     >
                         <span class="text-2xl cursor-pointer icon-heart"></span>
-                        <wishlist-count class="absolute -top-4 rounded-[44px] bg-navyBlue px-2 py-1.5 text-xs font-semibold leading-[9px] text-white ltr:left-5 rtl:right-5 max-md:ltr:left-4 max-md:rtl:right-4"></wishlist-count>
+
+                        @auth('customer')
+                            <wishlist-count class="absolute -top-4 rounded-[44px] bg-navyBlue px-2 py-1.5 text-xs font-semibold leading-[9px] text-white ltr:left-5 rtl:right-5 max-md:ltr:left-4 max-md:rtl:right-4"></wishlist-count>
+                        @endauth
                     </a>
                 @endif
 
@@ -60,7 +63,10 @@
                         class="relative inline-flex"
                     >
                         <span class="text-2xl cursor-pointer icon-compare"></span>
-                        <compare-count class="absolute -top-4 rounded-[44px] bg-navyBlue px-2 py-1.5 text-xs font-semibold leading-[9px] text-white ltr:left-5 rtl:right-5 max-md:ltr:left-4 max-md:rtl:right-4"></compare-count>
+
+                        @auth('customer')
+                            <compare-count class="absolute -top-4 rounded-[44px] bg-navyBlue px-2 py-1.5 text-xs font-semibold leading-[9px] text-white ltr:left-5 rtl:right-5 max-md:ltr:left-4 max-md:rtl:right-4"></compare-count>
+                        @endauth
                     </a>
                 @endif
 
