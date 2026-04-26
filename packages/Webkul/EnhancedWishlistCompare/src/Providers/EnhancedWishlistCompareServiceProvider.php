@@ -30,11 +30,6 @@ class EnhancedWishlistCompareServiceProvider extends ServiceProvider{
         $this->registerConfig();
 
         $this->app->register(EventServiceProvider::class);
-
-        $this->app->bind(
-            'Webkul\EnhancedWishlistCompare\Contracts\EnhancedWishlistCompareCount',
-            'Webkul\EnhancedWishlistCompare\Models\EnhancedWishlistCompareCount'
-        );
     }
 
     /**
