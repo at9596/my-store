@@ -9,7 +9,8 @@
             <span v-if="count > 0" :class="isPill ? '' : 'count'">
                 @{{ count }} 
                 <template v-if="showText">
-                    @{{ count == 1 ? 'Item' : 'Items' }}
+                    <span v-if="count == 1">{{ __('enhanced::app.wishlist.item') }}</span>
+                    <span v-else>{{ __('enhanced::app.wishlist.items') }}</span>
                 </template>
             </span>
         </div>
@@ -26,7 +27,8 @@
             <span v-if="count > 0" :class="isPill ? '' : 'count'">
                 @{{ count }} 
                 <template v-if="showText">
-                    @{{ count == 1 ? 'Item' : 'Items' }}
+                    <span v-if="count == 1">{{ __('enhanced::app.compare.item') }}</span>
+                    <span v-else>{{ __('enhanced::app.compare.items') }}</span>
                 </template>
             </span>
         </div>

@@ -7,7 +7,7 @@ class EnhancedWishlistCompareServiceProvider extends ServiceProvider{
     {
         $this->loadRoutesFrom(__DIR__ . '/../Routes/api.php');
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
-        $this->loadTranslationsFrom(__DIR__ . '/../Resources/lang');
+        $this->loadTranslationsFrom(__DIR__ . '/../Resources/lang', 'enhanced');
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'enhanced');
 
         $this->publishes([
